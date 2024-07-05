@@ -1,7 +1,7 @@
 library(ggplot2)
 library(ggimage)
 library(readxl)
-# Exemplo com imagens
+
 img_urls <- c("C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
               "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
               "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
