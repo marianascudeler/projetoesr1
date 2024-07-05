@@ -1,45 +1,57 @@
-library(ggrepel)
 library(ggplot2)
+library(ggimage)
 library(readxl)
-library(tidyverse)
+# Exemplo com imagens
+img_urls <- c("C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\93.png", #CHOPCCAS
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\84.png", #CUSCO
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\105.png", #IQUITOS
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\92.png", #MATZES
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\91.png", #MOCHES
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\90.png", #TRUJILLO
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\107.png" ) #UROS
 
-ances <- read_xlsx(file.choose(), sheet = "MEDIA_POP") #media das ancestralidade
+freq_ances <- read_excel(choose.files())
 
-freq_esr1 <- read.delim2(file.choose(), sep = " ", header = TRUE) #frequencia dos rs
+freq_reserva <- freq_ances
 
-#Adicionando uma nova coluna com os continentes
-ances["CONT"]<- c('Africanos', 'Africanos', 'Africanos', 'Africanos', 'Africanos', 
-                    'Miscigenados', 'Miscigenados', 'Miscigenados', 'Miscigenados', 'Miscigenados', 'Miscigenados', 
-                    'Europeus', 'Europeus', 'Europeus', 'Europeus', 'Europeus', 
-                    'Sul-asiático', 'Sul-asiático', 'Sul-asiático', 'Sul-asiático', 'Sul-asiático', 
-                    'Leste-asiático', 'Leste-asiático', 'Leste-asiático', 'Leste-asiático', 'Leste-asiático')
+vetor_cont_NAT <- c('Africanos', 'Miscigenados', 'Europeus', 'Sul Asiático', 'Leste Asiático',
+                    'CHOPCCAS', 'CUSCO', 'IQUITOS', 'MATZES', 'MOCHES', 'TRUJILLO', 'UROS')
 
-#adicionanto uma nova colunas com as codigo das populações
-freq_esr1["POP"] <- c('LWK', 'ESN', 'YRI', 'MSL', 'GWD', 
-         'ACB', 'ASW', 'CLM', 'MXL', 'PUR', 'PEL',
-         'TSI', 'IBS', 'GBR', 'CEU', 'FIN',
-         'PJL', 'GIH', 'ITU', 'STU', 'BEB',
-         'CDX', 'KHV', 'CHS', 'CHB', 'JPT')
+freq_ances$rs9340799.1 <- as.numeric(freq_ances$rs9340799.1)
+freq_ances$NAT <- as.numeric(freq_ances$NAT)
 
-#Juntando os dois dataframe em um só usando a coluna POP 
-freq_esr1  <- freq_esr1 %>%
-  left_join(ances, by = "POP")
-
-#Para que todos label apareça mesmo se tiver overlap
-options(ggrepel.max.overlaps = Inf)
-
-#Graficos para cada rs 
-
-rs191796612.C <- ggplot(freq_esr1, aes(as.numeric(EASW), as.numeric(rs191796612.1), #dados que serão utilizados para fazer o grafico
-                    label = POP, color = CONT)) +  #label separa pelas populações e color colori pelos continentes 
-  geom_point(shape = 19, size = 9) + #adiciona os pontos, shape é forma dos pontos e size o tamanho 
-  geom_label_repel(box.padding = 0.5, size = 8,  show.legend = FALSE ) + #adicona a caixa do label. size o tamanho fonte na box e show.legend tira essa legenda  
-  labs(y = "Frequência rs191796612.C", #modificar legendo do eixo y
-       x = "Ancestralidade Leste Asiática - Oeste", #modificar legendo do eixo x
-       color = "Regiões", #vai modificar legenda da legenda
-       shape = 19,
-       title = "Ancestralidade Leste Asiática - Oeste x Frequência do rs191796612.C") +
-  theme_classic() +
+ggplot(freq_ances, aes(NAT, rs9340799.1)) +
+  geom_image(aes(image = img_urls), size = 0.05) +
+  labs(y = "Frequência Alelo *2", #modificar legendo do eixo y
+       x = "Ancestralidade Nativo America", #modificar legendo do eixo x
+       color = "População", #vai modificar legenda da legenda
+       title = "Ancestralidade Nativo Americana x Frequência do Alelo rs9340799.1")+ #Coloca um titulo para o grafico
   theme(axis.title.y = element_text(size = 15, #para fazer mudanças nas legendas e eixo y
                                     margin = margin(r = 14)),#funçao que explica como os elementos que nao sao os dados sao representados
         axis.title.x = element_text(size = 15, 
@@ -50,190 +62,261 @@ rs191796612.C <- ggplot(freq_esr1, aes(as.numeric(EASW), as.numeric(rs191796612.
                              margin = margin(b = 15)),
         plot.title = element_text(hjust = 0.5),
         axis.text = element_text(size = 14)) +
-  scale_color_manual(values = paleta_cores_cont,
-                     breaks = vetor_cont)
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +  # Ajustando os intervalos do eixo x
+  scale_y_continuous(breaks = seq(0, 0.6, by = 0.1)) +  # Ajustando os intervalos do eixo y
+  theme(
+    axis.text.x = element_text(size = 12),  # Ajustando o tamanho do texto do eixo x
+    axis.text.y = element_text(size = 12)   # Ajustando o tamanho do texto do eixo y
+  )
 
-####################################
+###############################################################
 
+img_urls <- c("C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\93.png", #CHOPCCAS
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\84.png", #CUSCO
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\105.png", #IQUITOS
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\92.png", #MATZES
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\91.png", #MOCHES
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\90.png", #TRUJILLO
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\107.png" ) #uros
 
+freq_ances$rs2234693.1 <- as.numeric(freq_ances$rs2234693.1)
+freq_ances$NAT <- as.numeric(freq_ances$NAT)
 
-rs138788168.T <- ggplot(freq_esr1, aes(as.numeric(EASE), as.numeric(rs138788168.1), 
-                                       label = POP, color = CONT)) +  
-  geom_point(shape = 19, size = 9) +  
-  geom_label_repel(box.padding = 0.5, size = 8,  show.legend = FALSE ) + 
-  labs(y = "Frequência rs138788168.T", 
-       x = "Ancestralidade Leste Asiática - Leste",
-       color = "Regiões", 
-       shape = 19,
-       title = "Ancestralidade Leste Asiática - Leste x Frequência do rs138788168.T") +
-  theme_classic() +
-  theme(axis.title.y = element_text(size = 15, 
-                                    margin = margin(r = 14)),
+ggplot(freq_ances, aes(NAT, rs2234693.1)) +
+  geom_image(aes(image = img_urls), size = 0.05) +
+  labs(y = "Frequência rs2234693.1", #modificar legendo do eixo y
+       x = "Ancestralidade Nativo America", #modificar legendo do eixo x
+       color = "População", #vai modificar legenda da legenda
+       title = "Ancestralidade Nativo Americana x Frequência do Alelo rs2234693.1")+ #Coloca um titulo para o grafico
+  theme(axis.title.y = element_text(size = 15, #para fazer mudanças nas legendas e eixo y
+                                    margin = margin(r = 14)),#funçao que explica como os elementos que nao sao os dados sao representados
         axis.title.x = element_text(size = 15, 
-                                    margin = margin(t = 15)),
-        legend.title = element_text(face = "bold", size = 14), 
+                                    margin = margin(t = 15)),#para fazer mudanças nas legendas e eixo y
+        legend.title = element_text(face = "bold", size = 14), #colaca o legenda em negrito e muda o tamanho da fonte
         title = element_text(size = 14, 
                              face = "bold",
                              margin = margin(b = 15)),
         plot.title = element_text(hjust = 0.5),
         axis.text = element_text(size = 14)) +
-  scale_color_manual(values = paleta_cores_cont,
-                     breaks = vetor_cont)
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +  # Ajustando os intervalos do eixo x
+  scale_y_continuous(breaks = seq(0, 0.6, by = 0.1)) +  # Ajustando os intervalos do eixo y
+  theme(
+    axis.text.x = element_text(size = 12),  # Ajustando o tamanho do texto do eixo x
+    axis.text.y = element_text(size = 12)   # Ajustando o tamanho do texto do eixo y
+  )
 
-################################################################################
+##################################################################
 
+img_urls <- c("C:\\Users\\gppgx\\Downloads\\grossura80\\86.png", #LWK
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\87.png", #ESN
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\88.png", #YRI
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\94.png", #MSL
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\96.png", #GWD
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\100.png", #ACB
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\103.png", #ASW
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #CHOPCCAS
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #CUSCO
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #IQUITOS
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #MATZES
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #MOCHES
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #TRUJILLO
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png" ) #UROS
 
+freq_ances$rs2234693.1 <- as.numeric(freq_ances$rs2234693.1)
+freq_ances$AFRL <- as.numeric(freq_ances$AFRL)
 
-rs114659844.A <- ggplot(freq_esr1, aes(as.numeric(EAFR), as.numeric(rs114659844.1), 
-                                       label = POP, color = CONT)) +  
-  geom_point(shape = 19, size = 9) +  
-  geom_label_repel(box.padding = 0.5, size = 8,  show.legend = FALSE ) + 
-  labs(y = "Frequência rs114659844.A", 
-       x = "Ancestralidade Leste Africana",
-       color = "Regiões", 
-       shape = 19,
-       title = "Ancestralidade Leste Africana x Frequência do rs114659844.A") +
-  theme_classic() +
-  theme(axis.title.y = element_text(size = 15, 
-                                    margin = margin(r = 14)),
+ggplot(freq_ances, aes(AFRL, rs2234693.1)) +
+  geom_image(aes(image = img_urls), size = 0.05) +
+  labs(y = "Frequência rs2234693.1", #modificar legendo do eixo y
+       x = "Ancestralidade AFRL", #modificar legendo do eixo x
+       color = "População", #vai modificar legenda da legenda
+       title = "Ancestralidade AFRL x Frequência do Alelo rs2234693.1")+ #Coloca um titulo para o grafico
+  theme(axis.title.y = element_text(size = 15, #para fazer mudanças nas legendas e eixo y
+                                    margin = margin(r = 14)),#funçao que explica como os elementos que nao sao os dados sao representados
         axis.title.x = element_text(size = 15, 
-                                    margin = margin(t = 15)),
-        legend.title = element_text(face = "bold", size = 14), 
+                                    margin = margin(t = 15)),#para fazer mudanças nas legendas e eixo y
+        legend.title = element_text(face = "bold", size = 14), #colaca o legenda em negrito e muda o tamanho da fonte
         title = element_text(size = 14, 
                              face = "bold",
                              margin = margin(b = 15)),
         plot.title = element_text(hjust = 0.5),
         axis.text = element_text(size = 14)) +
-  scale_color_manual(values = paleta_cores_cont,
-                     breaks = vetor_cont)
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +  # Ajustando os intervalos do eixo x
+  scale_y_continuous(breaks = seq(0, 0.6, by = 0.1)) +  # Ajustando os intervalos do eixo y
+  theme(
+    axis.text.x = element_text(size = 12),  # Ajustando o tamanho do texto do eixo x
+    axis.text.y = element_text(size = 12)   # Ajustando o tamanho do texto do eixo y
+  )
 
+##############################################################
+img_urls <- c("C:\\Users\\gppgx\\Downloads\\grossura80\\86.png", #LWK
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\87.png", #ESN
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\88.png", #YRI
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\94.png", #MSL
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\96.png", #GWD
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\100.png", #ACB
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\103.png", #ASW
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\85.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #CHOPCCAS
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #CUSCO
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #IQUITOS
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #MATZES
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #MOCHES
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #TRUJILLO
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png" ) #UROS
 
-###################################################################################
+freq_ances$rs2234693.1 <- as.numeric(freq_ances$rs2234693.1)
+freq_ances$AFRO <- as.numeric(freq_ances$AFRO)
 
-rs77346468.A <- ggplot(freq_esr1, aes(as.numeric(WAFR), as.numeric(rs77346468.1), 
-                                       label = POP, color = CONT)) +  
-  geom_point(shape = 19, size = 9) +  
-  geom_label_repel(box.padding = 0.5, size = 8,  show.legend = FALSE ) + 
-  labs(y = "Frequência rs77346468.A", 
-       x = "Ancestralidade Oeste Africana",
-       color = "Regiões", 
-       shape = 19,
-       title = "Ancestralidade Oeste Africana x Frequência do rs77346468.A") +
-  theme_classic() +
-  theme(axis.title.y = element_text(size = 15, 
-                                    margin = margin(r = 14)),
+ggplot(freq_ances, aes(AFRO, rs2234693.1)) +
+  geom_image(aes(image = img_urls), size = 0.05) +
+  labs(y = "Frequência rs2234693.1", #modificar legendo do eixo y
+       x = "Ancestralidade AFRO", #modificar legendo do eixo x
+       color = "População", #vai modificar legenda da legenda
+       title = "Ancestralidade AFRO x Frequência do Alelo rs2234693.1")+ #Coloca um titulo para o grafico
+  theme(axis.title.y = element_text(size = 15, #para fazer mudanças nas legendas e eixo y
+                                    margin = margin(r = 14)),#funçao que explica como os elementos que nao sao os dados sao representados
         axis.title.x = element_text(size = 15, 
-                                    margin = margin(t = 15)),
-        legend.title = element_text(face = "bold", size = 14), 
+                                    margin = margin(t = 15)),#para fazer mudanças nas legendas e eixo y
+        legend.title = element_text(face = "bold", size = 14), #colaca o legenda em negrito e muda o tamanho da fonte
         title = element_text(size = 14, 
                              face = "bold",
                              margin = margin(b = 15)),
         plot.title = element_text(hjust = 0.5),
         axis.text = element_text(size = 14)) +
-  scale_color_manual(values = paleta_cores_cont,
-                     breaks = vetor_cont)
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +  # Ajustando os intervalos do eixo x
+  scale_y_continuous(breaks = seq(0, 0.6, by = 0.1)) +  # Ajustando os intervalos do eixo y
+  theme(
+    axis.text.x = element_text(size = 12),  # Ajustando o tamanho do texto do eixo x
+    axis.text.y = element_text(size = 12)   # Ajustando o tamanho do texto do eixo y
+  )
 
-###################################################################################
+################################################################
+img_urls <- c("C:\\Users\\gppgx\\Downloads\\grossura80\\95.png", #LWK
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png", #ESN
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png", #YRI
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png", #MSL
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png", #GWD
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png", #ACB
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\95.png", #ASW
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\99.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\101.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\89.png", #PJL
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\97.png", #GIH
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\102.png", #ITU
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\106.png", #STU
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\108.png", #BEB
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\83.png",
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #CHOPCCAS
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #CUSCO
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #IQUITOS
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #MATZES
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #MOCHES
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png", #TRUJILLO
+              "C:\\Users\\gppgx\\Downloads\\grossura80\\104.png" ) #UROS
 
-rs28457010.T <- ggplot(freq_esr1, aes(as.numeric(NAT), as.numeric(rs28457010.1), 
-                                      label = POP, color = CONT)) +  
-  geom_point(shape = 19, size = 9) +  
-  geom_label_repel(box.padding = 0.5, size = 8,  show.legend = FALSE ) + 
-  labs(y = "Frequência rs28457010.T", 
-       x = "Ancestralidade Nativo Americana",
-       color = "Regiões", 
-       shape = 19,
-       title = "Ancestralidade Nativo America x Frequência do rs28457010.T") +
-  theme_classic() +
-  theme(axis.title.y = element_text(size = 15, 
-                                    margin = margin(r = 14)),
+freq_ances$rs9340799.1 <- as.numeric(freq_ances$rs9340799.1)
+freq_ances$SAS <- as.numeric(freq_ances$SAS)
+
+ggplot(freq_ances, aes(SAS, rs9340799.1)) +
+  geom_image(aes(image = img_urls), size = 0.05) +
+  labs(y = "Frequência rs9340799.1", #modificar legendo do eixo y
+       x = "Ancestralidade SAS", #modificar legendo do eixo x
+       color = "População", #vai modificar legenda da legenda
+       title = "Ancestralidade SAS x Frequência do Alelo rs9340799.1")+ #Coloca um titulo para o grafico
+  theme(axis.title.y = element_text(size = 15, #para fazer mudanças nas legendas e eixo y
+                                    margin = margin(r = 14)),#funçao que explica como os elementos que nao sao os dados sao representados
         axis.title.x = element_text(size = 15, 
-                                    margin = margin(t = 15)),
-        legend.title = element_text(face = "bold", size = 14), 
+                                    margin = margin(t = 15)),#para fazer mudanças nas legendas e eixo y
+        legend.title = element_text(face = "bold", size = 14), #colaca o legenda em negrito e muda o tamanho da fonte
         title = element_text(size = 14, 
                              face = "bold",
                              margin = margin(b = 15)),
         plot.title = element_text(hjust = 0.5),
         axis.text = element_text(size = 14)) +
-  scale_color_manual(values = paleta_cores_cont,
-                     breaks = vetor_cont)
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +  # Ajustando os intervalos do eixo x
+  scale_y_continuous(breaks = seq(0, 0.6, by = 0.1)) +  # Ajustando os intervalos do eixo y
+  theme(
+    axis.text.x = element_text(size = 12),  # Ajustando o tamanho do texto do eixo x
+    axis.text.y = element_text(size = 12)   # Ajustando o tamanho do texto do eixo y
+  )
 
-###################################################################################
-
-rs572442048.T <- ggplot(freq_esr1, aes(as.numeric(SAS), as.numeric(rs572442048.1), 
-                                      label = POP, color = CONT)) +  
-  geom_point(shape = 19, size = 9) +  
-  geom_label_repel(box.padding = 0.5, size = 8,  show.legend = FALSE ) + 
-  labs(y = "Frequência rs572442048.T", 
-       x = "Ancestralidade Sul Asiática",
-       color = "Regiões", 
-       shape = 19,
-       title = "Ancestralidade Sul Asiática x Frequência do rs572442048.T") +
-  theme_classic() +
-  theme(axis.title.y = element_text(size = 15, 
-                                    margin = margin(r = 14)),
-        axis.title.x = element_text(size = 15, 
-                                    margin = margin(t = 15)),
-        legend.title = element_text(face = "bold", size = 14), 
-        title = element_text(size = 14, 
-                             face = "bold",
-                             margin = margin(b = 15)),
-        plot.title = element_text(hjust = 0.5),
-        axis.text = element_text(size = 14)) +
-  scale_color_manual(values = paleta_cores_cont,
-                     breaks = vetor_cont)
-
-
-
-###################################################################################
-
-
-rs192973296.A <- ggplot(freq_esr1, aes(as.numeric(NEUR), as.numeric(rs192973296.1), 
-                                       label = POP, color = CONT)) +  
-  geom_point(shape = 19, size = 9) +  
-  geom_label_repel(box.padding = 0.5, size = 8,  show.legend = FALSE ) + 
-  labs(y = "Frequência rs192973296.A", 
-       x = "Ancestralidade Norte Europeu",
-       color = "Regiões", 
-       shape = 19,
-       title = "Ancestralidade Norte Europeu x Frequência do rs192973296.A") +
-  theme_classic() +
-  theme(axis.title.y = element_text(size = 15, 
-                                    margin = margin(r = 14)),
-        axis.title.x = element_text(size = 15, 
-                                    margin = margin(t = 15)),
-        legend.title = element_text(face = "bold", size = 14), 
-        title = element_text(size = 14, 
-                             face = "bold",
-                             margin = margin(b = 15)),
-        plot.title = element_text(hjust = 0.5),
-        axis.text = element_text(size = 14)) +
-  scale_color_manual(values = paleta_cores_cont,
-                     breaks = vetor_cont)
-
-
-###################################################################################
-
-
-rs144594234.A <- ggplot(freq_esr1, aes(as.numeric(SEUR), as.numeric(rs144594234.1), 
-                                       label = POP, color = CONT)) +  
-  geom_point(shape = 19, size = 9) +  
-  geom_label_repel(box.padding = 0.5, size = 8,  show.legend = FALSE ) + 
-  labs(y = "Frequência rs144594234.A", 
-       x = "Ancestralidade Sul Europeu",
-       color = "Regiões", 
-       shape = 19,
-       title = "Ancestralidade Sul Europeu  x Frequência do rs144594234.A") +
-  theme_classic() +
-  theme(axis.title.y = element_text(size = 15, 
-                                    margin = margin(r = 14)),
-        axis.title.x = element_text(size = 15, 
-                                    margin = margin(t = 15)),
-        legend.title = element_text(face = "bold", size = 14), 
-        title = element_text(size = 14, 
-                             face = "bold",
-                             margin = margin(b = 15)),
-        plot.title = element_text(hjust = 0.5),
-        axis.text = element_text(size = 14)) +
-  scale_color_manual(values = paleta_cores_cont,
-                     breaks = vetor_cont)
